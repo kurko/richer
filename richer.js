@@ -3,26 +3,28 @@
  *
  * Based on RTE by Batiste Bieler
  */
-var heightEqualText = false;
 
+var richer = {
 
-$(document).ready(function(){
+	heightEqualText: false,
 
-	if( document.designMode || document.contentEditable ){
-        $('textarea.richer').each( function(){
-            startDesignMode($(this));
-        });
-    }
+	init: function(){
+		if( document.designMode || document.contentEditable ){
+        	$('textarea.richer').each( function(){
+	            richer.startDesignMode($(this));
+	        });
+		}
+    },
 
-	function formatText(iframe, command, option) {
+	sendFormatMessage: function(iframe, command, option){
         iframe.contentWindow.focus();
         try {
             iframe.contentWindow.document.execCommand(command, false, option);
         } catch(e){ console.log(e) }
         iframe.contentWindow.focus();
-    }
+    },
 		
-	function startDesignMode(textarea) {
+	startDesignMode: function(textarea) {
         var iframe = document.createElement("iframe");
         iframe.frameBorder  = 0;
         iframe.frameMargin  = 0;
@@ -38,18 +40,18 @@ $(document).ready(function(){
         if( $.trim(content) == '' ) content = '<br>';
 
 		var defaultEditorMarkup = "<html><head></head><body class='richerBody'>"+textarea.val()+"</body></html>";
-        tryEnableDesignMode(
+        richer.tryEnableDesignMode(
 			iframe,
 			defaultEditorMarkup,
 			function() {
 	            $("#styling-"+iframe.title).remove();
-	            $(iframe).before(stylebar(iframe));
+	            $(iframe).before( richer.stylebar(iframe) );
 	            textarea.remove();
         	}
 		);
-    }
+    },
 
-    function tryEnableDesignMode(iframe, doc, callback) {
+    tryEnableDesignMode: function(iframe, doc, callback){
         try {
             iframe.contentWindow.document.open();
             iframe.contentWindow.document.write(doc);
@@ -74,9 +76,9 @@ $(document).ready(function(){
 			//tryEnableDesignMode(iframe, doc, callback)
 		}, 250);
         return false;
-    }
+    },
 
-    function disableDesignMode(iframe, submit) {
+    disableDesignMode: function(iframe, submit) {
         var content = iframe.contentWindow.document.getElementsByTagName("body")[0].innerHTML;
         if( submit == true )
             var textarea = $('<input type="hidden" />');
@@ -91,9 +93,9 @@ $(document).ready(function(){
         if( submit != true )
             $(iframe).remove();
         return textarea;
-    }
+    },
 
-	function stylebar(iframe) {
+	stylebar: function(iframe) {
 
 	       var tb = $("<div class='richer_stylebar' id='styling-"+iframe.title+"'><div>\
             <p>\
@@ -104,46 +106,55 @@ $(document).ready(function(){
                     <option value='h3'>Title 3</option>\
                     <option value='h4'>Title 4</option>\
                 </select>\
-                <a href='javascript:void(0)' class='bold'><strong>Bold</strong></a>\
-                <a href='javascript:void(0)' class='italic'><em>Italic</em></a>\
-                <a href='javascript:void(0)' class='unorderedlist'>List</a>\
-                <a href='javascript:void(0)' class='link'>Link</a>\
+                <a href='javascript:void(0)' data-format-message='bold' class='bold'><strong>Bold</strong></a>\
+                <a href='javascript:void(0)' data-format-message='italic' class='italic'><em>Italic</em></a>\
+                <a href='javascript:void(0)' data-format-message='insertunorderedlist' class='unorderedlist'>List</a>\
+                <a href='javascript:void(0)' data-format-method='link' class='link'>Link</a>\
             </p></div></div>");
 
+		/*
+		 * Maps formats
+		 */
         $('select', tb).change(function(){
             var index = this.selectedIndex;
-            if( index!=0 ) {
+            if( index != 0 ) {
                 var selected = this.options[index].value;
-                formatText(iframe, "formatblock", '<'+selected+'>');
+                richer.sendFormatMessage(iframe, "formatblock", '<'+selected+'>');
             }
         });
-        $('.bold', tb).click(function(){ formatText(iframe, 'bold'); 							return false; });
-        $('.italic', tb).click(function(){ formatText(iframe, 'italic'); 						return false; });
-        $('.unorderedlist', tb).click(function(){ formatText(iframe, 'insertunorderedlist'); 	return false; });
+
+		/*
+		 * Maps each button formatting messages
+		 */
+        $('a[data-format-message]', tb).click(function(){
+			richer.sendFormatMessage(iframe, $(this).attr('data-format-message'));
+			return false;
+		});
+		
         $('.link', tb).click(function(){ 
-            var p=prompt("URL:");
-            if(p)
-                formatText(iframe, 'CreateLink', p);
-            return false; });
+            var p = prompt("URL:");
+            if( p )
+                richer.sendFormatMessage(iframe, 'CreateLink', p);
+            return false;
+		});
 
         $(iframe).parents('form').submit(function(){
-            disableDesignMode(iframe, true);
+            richer.disableDesignMode(iframe, true);
 		});
         var iframeDoc = $(iframe.contentWindow.document);
 
         var select = $('select', tb)[0];
         iframeDoc.mouseup(function(){ 
-            setSelectedType(getSelectionElement(iframe), select);
+            richer.setSelectedType( richer.getSelectionElement(iframe), select );
             return true;
         });
         iframeDoc.keyup(function(){ 
-            setSelectedType(getSelectionElement(iframe), select);
+            richer.setSelectedType( richer.getSelectionElement(iframe), select );
             var body = $('body', iframeDoc);
-			window.status = body.scrollTop();
             if( body.scrollTop() > 0 ){
 				var tempHeight = parseInt(iframe.height) + body.scrollTop();
 				// textarea's height equals the textsize
-                if( heightEqualText )
+                if( richer.heightEqualText )
 					iframe.height = tempHeight
 				else
 					iframe.height = Math.min(350, tempHeight);
@@ -152,9 +163,9 @@ $(document).ready(function(){
         });
 		
         return tb;
-    }
+    },
 
-    function setSelectedType(node, select) {
+    setSelectedType: function(node, select) {
         while(node.parentNode) {
             var nName = node.nodeName.toLowerCase();
             for( var i = 0; i < select.options.length; i++ ){
@@ -167,24 +178,23 @@ $(document).ready(function(){
         }
         select.selectedIndex=0;
         return true;
-    }
+    },
     
-    function getSelectionElement(iframe) {
+    getSelectionElement: function(iframe) {
+		/*
+		 * IE selections
+		 */
         if (iframe.contentWindow.document.selection) {
-            // IE selections
-            selection = iframe.contentWindow.document.selection;
-            range = selection.createRange();
+            range = iframe.contentWindow.document.selection.createRange();
+            try { 		node = range.parentElement(); 	}
+            catch (e) { return false; 					}
+        }
+		/*
+		 * Mozilla selections
+		 */
+		else {
             try {
-                node = range.parentElement();
-            }
-            catch (e) {
-                return false;
-            }
-        } else {
-            // Mozilla selections
-            try {
-                selection = iframe.contentWindow.getSelection();
-                range = selection.getRangeAt(0);
+                range = iframe.contentWindow.getSelection().getRangeAt(0);
             }
             catch(e){
                 return false;
@@ -194,6 +204,9 @@ $(document).ready(function(){
         return node;
     }
 	
-})
+}
 
+$(document).ready(function(){
+	richer.init();
+})
 
