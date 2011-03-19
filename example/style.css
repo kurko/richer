@@ -1,0 +1,7 @@
+iframe.richer {
+	border: 1px solid #ccc;
+	-moz-border-radius: 2px;
+	overflow: auto;
+}
+
+iframe h2 { color: red; }
