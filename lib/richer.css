@@ -1,0 +1,27 @@
+.richer_stylebar {
+	display: block;
+	margin: 2px 0 3px 0;
+}
+	.richer_stylebar .containner {
+		clear: both;
+		display: table;
+	}
+
+.richer_stylebar .containner .option {
+	display: inline-block;
+	float: left;
+}
+
+.richer_stylebar .containner .option.separation { width: 3px; height: 20px; }
+	
+.richer_stylebar .containner a.btn {
+	width: 27px; height: 22px;
+	margin: 0; padding: 0;
+}
+	.richer_stylebar a.btn.clicked { background-position: 0 -22px; }
+
+.richer_stylebar .bold 			{ background: url('btn_bold.png'); }
+.richer_stylebar .italic 		{ background: url('btn_italic.png'); }
+.richer_stylebar .link 			{ background: url('btn_link.png'); }
+.richer_stylebar .unorderedlist	{ background: url('btn_unorderedlist.png'); }
+.richer_stylebar .underline 	{ background: url('btn_underline.png'); }
