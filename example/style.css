@@ -1,7 +1,12 @@
+* {
+	margin: 0;
+}
+
 iframe.richer {
 	border: 1px solid #ccc;
 	-moz-border-radius: 2px;
 	overflow: auto;
+	width: 50%;
 }
 
 iframe h2 { color: red; }
