@@ -11,7 +11,7 @@ options (bold, italic etc). We don't want TinyMCE, as it alone has almost more f
 How to start
 ============
 
-Add the following code in your page's head tag. It'll convert your textareas to editor:
+Add the following code in your page's head tag. It'll convert your textareas with .richer classes to editor:
 
     // first, jQuery
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
@@ -19,6 +19,16 @@ Add the following code in your page's head tag. It'll convert your textareas to 
     // then CSS, then richer.js
     <link rel="stylesheet" href="path/to/css/richer.css" />
     <script src="path/to/richer/folder/richer.js"></script>
+
+Your textareas should have the class _.richer_.
+
+    <textarea class="richer"></textarea>
+
+You can embed HTML into the editor on load:
+
+    <textarea class="richer"> This is <b>bold</b>.</textarea>
+
+Browsers still use b for bold, i for italic (instead of strong or em). So we stick with it.
 
 Take a look at the index.html in the example/ directory. Don't forget the buttons' images. If you wish,
 change styles in richer.css.
