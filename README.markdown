@@ -56,7 +56,10 @@ this is a draft list of features and functionalities we'd like to see in Richer 
 * font sizing
 * a better interface to configurate richer
 
-People Involved
-===============
+License
+=======
 
-Alexandre de Oliveira (author)
+This code is covered but the MIT license, which means, do whatever you
+want (copy, rewrite, whatever), but I deeply incourage you to fork, code
+and make a pull request.
+

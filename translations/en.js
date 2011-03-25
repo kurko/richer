@@ -5,6 +5,7 @@
  * only if you want to customize texts.
  *
  * @date March 2011
+ * @version 0.1
  */
 var richertext = {
 	paragraph: 'Paragraph',

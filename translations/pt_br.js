@@ -3,6 +3,7 @@
  *
  * @author Alexandre de Oliveira <chavedomundo@gmail.com>
  * @date March 2011
+ * @version 0.1
  */
 var richertext = {
 	paragraph: 'Parágrafo',
